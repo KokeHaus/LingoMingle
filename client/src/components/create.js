@@ -7,7 +7,7 @@ const Create = () => {
       <div className="text-center">
         <h1>Sign up or Sign in !</h1>
         <Form>
-
+            
         </Form>
         <Button variant="primary" size="lg">
           Sign up

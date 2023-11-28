@@ -16,7 +16,7 @@ module.exports = {
           console.log("Successfully connected to MongoDB.");
         } catch (err) {
           console.error("Error connecting to MongoDB", err);
-          throw err; // or handle error as needed
+          throw err; 
         }
       },
       

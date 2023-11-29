@@ -8,17 +8,20 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+const authRoutes = require('./routes/auth'); 
+app.use('/api', authRoutes); 
+
 app.use(require("./routes/record"));
 
-// Perform a database connection when server starts
-(async () => {
-    try {
-      await dbo.connectToServer();
-      app.listen(port, () => {
-        console.log(`Server is running on port: ${port}`);
-      });
-    } catch (err) {
-      console.error('Failed to start the server:', err);
+// Use the callback approach
+dbo.connectToServer((err) => {
+    if (err) {
+        console.error('Failed to connect to MongoDB:', err);
+        process.exit(1); // Exit the process if unable to connect
     }
-  })();
-  
+
+    app.listen(port, () => {
+        console.log(`Server is running on port: ${port}`);
+    });
+});

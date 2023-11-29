@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import { Container, Button } from 'react-bootstrap';
 
 const HomePage = () => {
@@ -15,9 +16,9 @@ const HomePage = () => {
               Connect with language enthusiasts from around the world, 
               practice your language skills, and make new friends!
             </p>
-            <Button variant="primary" size="lg">
+            <Link className="btn btn-primary" to = "/select">
               Start Mingling
-            </Button>
+            </Link>
           </div>
         </Container>
       </div>

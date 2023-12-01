@@ -12,7 +12,7 @@ const Mingle = () => {
           <Row className="mb-3">
             <Col className="text-center">
               <Button variant="outline-primary" size="lg" className="w-100 mb-3">
-                Chat
+                Text
               </Button>
             </Col>
           </Row>

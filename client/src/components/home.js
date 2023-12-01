@@ -1,10 +1,13 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
-import { Container, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
-
   const navbarHeight = '56px';
+
+  // Check if the user is logged in
+  const token = localStorage.getItem('token');
+  const linkDestination = token ? '/select' : '/create';
 
   return (
     <>
@@ -16,7 +19,7 @@ const HomePage = () => {
               Connect with language enthusiasts from around the world, 
               practice your language skills, and make new friends!
             </p>
-            <Link className="btn btn-primary" to = "/select">
+            <Link className="btn btn-primary" to={linkDestination}>
               Start Mingling
             </Link>
           </div>

@@ -35,9 +35,9 @@ const SignIn = () => {
         console.log('Sign-in Success:', result);
         localStorage.setItem('token', result.token); 
         localStorage.setItem('username', result.username); 
-        navigate('/mingle');
+        navigate('/select');
 
-        navigate('/mingle'); 
+         
       } else {
         throw new Error(`Error: ${response.statusText}`);
       }

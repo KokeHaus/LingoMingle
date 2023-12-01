@@ -7,12 +7,12 @@ const Create = () => {
     const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
-    nativeLanguage: '',
-    targetLanguage: '',
+    native: '',
+    target: '',
     email: '',
     password: ''
   });
-
+  const [error, setError] = useState('');
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -23,6 +23,10 @@ const Create = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.username || !formData.native || !formData.target || !formData.email || !formData.password) {
+      alert('Please fill in all fields');
+      return;
+    }
     try {
       const response = await fetch('http://localhost:5000/api/signup', {
         method: 'POST',
@@ -37,10 +41,12 @@ const Create = () => {
         console.log('Signup Success:', result);
         navigate('/signin'); 
       } else {
-        throw new Error(`Error: ${response.statusText}`);
+        const result = await response.json();
+        setError(result.message);
       }
     } catch (error) {
       console.error('Signup Failed:', error);
+      setError('Signup failed. Please try again.');
     }
   };
 
@@ -56,11 +62,11 @@ const Create = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Native language</Form.Label>
-              <Form.Control type="text" placeholder="Native language" name="nativeLanguage" onChange={handleInputChange} />
+              <Form.Control type="text" placeholder="Native language" name="native" onChange={handleInputChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Target language</Form.Label>
-              <Form.Control type="text" placeholder="Target language" name="targetLanguage" onChange={handleInputChange} />
+              <Form.Control type="text" placeholder="Target language" name="target" onChange={handleInputChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Email address</Form.Label>
@@ -70,6 +76,7 @@ const Create = () => {
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" placeholder="Enter password" name="password" onChange={handleInputChange} />
             </Form.Group>
+            {error && <div style={{ color: 'red' }}>{error}</div>}
             <div className="d-grid">
               <Button variant="primary" type="submit">
                 Sign Up

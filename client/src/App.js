@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/navbar";
 import Home from "./components/home";
-// import RecordList from "./components/recordList";
 // import Edit from "./components/edit";
 import Select from "./components/select";
 import Create from "./components/create";

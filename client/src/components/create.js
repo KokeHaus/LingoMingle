@@ -1,58 +1,66 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Container, Card, Form, Button } from 'react-bootstrap';
-const navbarHeight = '56px';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Container, Card, Form, Button } from "react-bootstrap";
+const navbarHeight = "56px";
 
 const Create = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    native: '',
-    target: '',
-    email: '',
-    password: ''
+    username: "",
+    native: "",
+    target: "",
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.native || !formData.target || !formData.email || !formData.password) {
-      alert('Please fill in all fields');
+      alert("Please fill in all fields");
       return;
     }
     try {
-      const response = await fetch('http://localhost:5000/api/signup', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/signup", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Signup Success:', result);
-        navigate('/signin'); 
+        console.log("Signup Success:", result);
+        navigate("/signin");
       } else {
         const result = await response.json();
         setError(result.message);
       }
     } catch (error) {
-      console.error('Signup Failed:', error);
-      setError('Signup failed. Please try again.');
+      console.error("Signup Failed:", error);
+      setError("Signup failed. Please try again.");
     }
   };
 
   return (
-    <Container style={{ paddingTop: navbarHeight, backgroundColor: '#f0f8ff', height: `calc(100vh - ${navbarHeight})`, maxWidth: '100vw' }} className="d-flex justify-content-center align-items-center">
-      <Card style={{ width: '24rem', padding: '20px' }}>
+    <Container
+      style={{
+        paddingTop: navbarHeight,
+        backgroundColor: "#f0f8ff",
+        height: `calc(100vh - ${navbarHeight})`,
+        maxWidth: "100vw",
+      }}
+      className="d-flex justify-content-center align-items-center"
+    >
+      <Card style={{ width: "24rem", padding: "20px" }}>
         <Card.Body>
           <h3 className="text-center mb-4">Sign Up</h3>
           <Form onSubmit={handleSubmit}>
@@ -76,7 +84,7 @@ const Create = () => {
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" placeholder="Enter password" name="password" onChange={handleInputChange} />
             </Form.Group>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
+            {error && <div style={{ color: "red" }}>{error}</div>}
             <div className="d-grid">
               <Button variant="primary" type="submit">
                 Sign Up

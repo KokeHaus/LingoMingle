@@ -1,9 +1,9 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user'); 
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const router = express.Router();
 
-router.post('/signup', async (req, res) => {
+router.post("/signup", async (req, res) => {
   try {
     let newUser = new User(req.body);
     await newUser.save();
@@ -12,38 +12,34 @@ router.post('/signup', async (req, res) => {
     if (error.code === 11000) {
       // MongoDB duplicate key error
       res.status(400).json({ message: "Username or email already exists" });
-      return; 
+      return;
     }
     res.status(500).json({ message: error.message });
   }
 });
 
-  
-  
+router.post("/signin", async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    console.log("User found:", user); // For debugging, remove in production
 
-router.post('/signin', async (req, res) => {
-    try {
-      const user = await User.findOne({ email: req.body.email });
-      console.log('User found:', user); // For debugging, remove in production
-  
-      if (user) {
-        const isMatch = await user.comparePassword(req.body.password);
-        console.log('Password match:', isMatch); // For debugging, remove in production
-  
-        if (isMatch) {
-          const token = jwt.sign({ userId: user._id }, 'your_jwt_secret', { expiresIn: '1d' });
-          res.json({ token, username: user.username });
-        } else {
-          res.status(401).send("Authentication failed");
-        }
+    if (user) {
+      const isMatch = await user.comparePassword(req.body.password);
+      console.log("Password match:", isMatch); // For debugging, remove in production
+
+      if (isMatch) {
+        const token = jwt.sign({ userId: user._id }, "your_jwt_secret", { expiresIn: "1d" });
+        res.json({ token, username: user.username });
       } else {
-        res.status(401).send("User not found");
+        res.status(401).send("Authentication failed");
       }
-    } catch (error) {
-      console.error('Sign-in error:', error);
-      res.status(500).send(error.message);
+    } else {
+      res.status(401).send("User not found");
     }
-  });
-  
+  } catch (error) {
+    console.error("Sign-in error:", error);
+    res.status(500).send(error.message);
+  }
+});
 
 module.exports = router;

@@ -4,14 +4,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const username = localStorage.getItem('username'); // Retrieve the username from localStorage
+  const username = localStorage.getItem("username"); // Retrieve the username from localStorage
 
   const handleLogout = () => {
     // Clear user token and profile data from localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
     // Redirect to the sign-in page
-    navigate('/signin');
+    navigate("/signin");
   };
 
   return (

@@ -1,9 +1,10 @@
-const express = require("express");
-const User = require("../models/user");
-const router = express.Router();
+import { Router } from "express";
+import User from "../models/User.js";
+const router = Router();
 
 let textqueue = [];
 let audioqueue = [];
+
 router.post("/jointextqueue", async (req, res) => {
   const username = req.body.username;
   if (!textqueue.includes(username)) {
@@ -48,4 +49,4 @@ router.get("/audio-queue-size", async (req, res) => {
   res.status(200).json({ size: audioqueue.length });
 });
 
-module.exports = router;
+export default router;

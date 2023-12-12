@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+import { Schema, model } from "mongoose";
+import { genSalt, hash, compare } from "bcrypt";
 const saltRounds = 10;
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   native: { type: String, required: true },
   target: { type: String, required: true },
@@ -15,8 +15,8 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   try {
-    const salt = await bcrypt.genSalt(saltRounds);
-    this.password = await bcrypt.hash(this.password, salt);
+    const salt = await genSalt(saltRounds);
+    this.password = await hash(this.password, salt);
     next();
   } catch (err) {
     next(err);
@@ -24,8 +24,9 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+  return await compare(candidatePassword, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+const User = model("User", userSchema);
+
+export default User;

@@ -4,10 +4,8 @@ import bodyParser from "koa-bodyparser";
 import cors from "@koa/cors";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
-import dotenv from "dotenv";
 import { connectMongoDB } from "./dbs/mongodb.js";
-
-dotenv.config({ path: "./config.env" });
+import "dotenv/config.js";
 
 const app = new Koa();
 const router = new Router();
@@ -20,8 +18,11 @@ const io = new SocketIOServer(httpServer, {
 });
 
 // Middleware
+import { AuthMiddleware } from "./middleware/auth.js";
+
 app.use(cors());
 app.use(bodyParser());
+app.use(AuthMiddleware);
 
 // WebSocket logic
 io.on("connection", (socket) => {

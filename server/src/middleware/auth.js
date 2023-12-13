@@ -6,6 +6,7 @@ export async function AuthMiddleware(ctx, next) {
   // Allow unauthenticated access to allowed routes
   if (allowedRoutes.includes(ctx.path) || true) {
     console.log("AuthMiddleware: Skipping auth -", ctx.path);
+    ctx.auth = { authorized: false };
     return next();
   }
 
@@ -13,7 +14,8 @@ export async function AuthMiddleware(ctx, next) {
   if (!token) {
     console.log("AuthMiddleware: Access denied");
     ctx.status = 401;
-    return (ctx.body = { message: "No token provided" });
+    ctx.body = { message: "No token provided" };
+    return;
   }
 
   try {
@@ -24,15 +26,20 @@ export async function AuthMiddleware(ctx, next) {
     if (!userId) {
       console.log("AuthMiddleware: Access denied");
       ctx.status = 401;
-      return (ctx.body = { message: "Invalid or expired token" });
+      ctx.body = { message: "Invalid or expired token" };
+      return;
     }
 
-    ctx.auth = { userId };
+    ctx.auth = {
+      authorized: true,
+      userId,
+    };
 
     await next();
   } catch (err) {
     console.log("AuthMiddleware: Access denied", err);
     ctx.status = 401;
-    return (ctx.body = { message: "Invalid or expired token" });
+    ctx.body = { message: "Invalid or expired token" };
+    return;
   }
 }

@@ -3,8 +3,9 @@ import { createServer } from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
-dotenv.config({ path: "./config.env" });
 import { connectMongoDB } from "./dbs/mongodb.js";
+
+dotenv.config({ path: "../config.env" });
 
 const app = express();
 const server = createServer(app);
@@ -21,6 +22,7 @@ app.use(json());
 // Your API routes
 import authRoutes from "./routes/auth.js";
 import matchRoutes from "./routes/match.js";
+
 app.use("/api", authRoutes);
 app.use("/api", matchRoutes);
 

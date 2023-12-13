@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { genSalt, hash, compare } from "bcrypt";
+
 const saltRounds = 10;
 
 const userSchema = new Schema({

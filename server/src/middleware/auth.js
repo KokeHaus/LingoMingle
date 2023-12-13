@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 
+const SKIP_AUTH = true;
 const allowedRoutes = ["/api/signin"];
 
 export async function AuthMiddleware(ctx, next) {
   // Allow unauthenticated access to allowed routes
-  if (allowedRoutes.includes(ctx.path) || true) {
+  if (allowedRoutes.includes(ctx.path) || SKIP_AUTH) {
     console.log("AuthMiddleware: Skipping auth -", ctx.path);
     ctx.auth = { authorized: false };
     return next();

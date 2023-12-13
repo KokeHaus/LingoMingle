@@ -1,30 +1,27 @@
-import express, { json } from "express";
+import Koa from "koa";
+import Router from "koa-router";
+import bodyParser from "koa-bodyparser";
+import cors from "@koa/cors";
 import { createServer } from "http";
-import cors from "cors";
-import { Server } from "socket.io";
+import { Server as SocketIOServer } from "socket.io";
 import dotenv from "dotenv";
 import { connectMongoDB } from "./dbs/mongodb.js";
 
-dotenv.config({ path: "../config.env" });
+dotenv.config({ path: "./config.env" });
 
-const app = express();
-const server = createServer(app);
-const io = new Server(server, {
+const app = new Koa();
+const router = new Router();
+const httpServer = createServer(app.callback());
+const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: "*", // Adjust this according to your front-end URL for security
+    origin: "*", // Adjust as needed
     methods: ["GET", "POST"],
   },
 });
 
+// Middleware
 app.use(cors());
-app.use(json());
-
-// Your API routes
-import authRoutes from "./routes/auth.js";
-import matchRoutes from "./routes/match.js";
-
-app.use("/api", authRoutes);
-app.use("/api", matchRoutes);
+app.use(bodyParser());
 
 // WebSocket logic
 io.on("connection", (socket) => {
@@ -45,10 +42,18 @@ io.on("connection", (socket) => {
   });
 });
 
+// Routes
+import authRoutes from "./routes/auth.js";
+import matchRoutes from "./routes/match.js";
+
+router.use("/api", authRoutes.routes());
+router.use("/api", matchRoutes.routes());
+app.use(router.routes()).use(router.allowedMethods());
+
 // Connect to MongoDb
 await connectMongoDB();
 
 // serve!
-server.listen(process.env.PORT || 5000, () => {
+httpServer.listen(process.env.PORT || 5000, () => {
   console.log(`Server is running on port: ${process.env.PORT || 5000}`);
 });

@@ -1,44 +1,51 @@
-import { Router } from "express";
+import Router from "koa-router";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-const router = Router();
 
-router.post("/signup", async (req, res) => {
+const router = new Router();
+
+router.post("/signup", async (ctx) => {
   try {
-    let newUser = new User(req.body);
+    let newUser = new User(ctx.request.body);
     await newUser.save();
-    res.status(201).json({ message: "User created successfully" });
+    ctx.status = 201;
+    ctx.body = { message: "User created successfully" };
   } catch (error) {
     if (error.code === 11000) {
       // MongoDB duplicate key error
-      res.status(400).json({ message: "Username or email already exists" });
+      ctx.status = 400;
+      ctx.body = { message: "Username or email already exists" };
       return;
     }
-    res.status(500).json({ message: error.message });
+    ctx.status = 500;
+    ctx.body = { message: error.message };
   }
 });
 
-router.post("/signin", async (req, res) => {
+router.post("/signin", async (ctx) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: ctx.request.body.email });
     console.log("User found:", user); // For debugging, remove in production
 
     if (user) {
-      const isMatch = await user.comparePassword(req.body.password);
+      const isMatch = await user.comparePassword(ctx.request.body.password);
       console.log("Password match:", isMatch); // For debugging, remove in production
 
       if (isMatch) {
         const token = jwt.sign({ userId: user._id }, "your_jwt_secret", { expiresIn: "1d" });
-        res.json({ token, username: user.username });
+        ctx.body = { token, username: user.username };
       } else {
-        res.status(401).send("Authentication failed");
+        ctx.status = 401;
+        ctx.body = "Authentication failed";
       }
     } else {
-      res.status(401).send("User not found");
+      ctx.status = 401;
+      ctx.body = "User not found";
     }
   } catch (error) {
     console.error("Sign-in error:", error);
-    res.status(500).send(error.message);
+    ctx.status = 500;
+    ctx.body = error.message;
   }
 });
 
